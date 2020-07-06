@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSharpTemplateEngine", "SimpleSharpTemplateEngine\SimpleSharpTemplateEngine.csproj", "{72E6DB43-6508-4A01-8C22-55FFC50CB5BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSharpTemplateEngine.Tests", "SimpleSharpTemplateEngine.Tests\SimpleSharpTemplateEngine.Tests.csproj", "{52C5DE28-E833-4524-A483-DF1BA1BD8A5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72E6DB43-6508-4A01-8C22-55FFC50CB5BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E6DB43-6508-4A01-8C22-55FFC50CB5BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E6DB43-6508-4A01-8C22-55FFC50CB5BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E6DB43-6508-4A01-8C22-55FFC50CB5BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52C5DE28-E833-4524-A483-DF1BA1BD8A5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C5DE28-E833-4524-A483-DF1BA1BD8A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52C5DE28-E833-4524-A483-DF1BA1BD8A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52C5DE28-E833-4524-A483-DF1BA1BD8A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2ED7C6B8-C325-42C3-8AF8-69E3FB318B74}
+	EndGlobalSection
+EndGlobal
