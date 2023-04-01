@@ -17,9 +17,13 @@ namespace SimpleSharpTemplateEngine.Models
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
             if (property == null)
+            {
                 throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
+            }
             if (!typeof(bool).IsAssignableFrom(property.PropertyType))
+            {
                 throw new Exception($"The if variable ##{this.PropertyName}## isn't a boolean.");
+            }
 
             bool value = (bool)property.GetValue(model, null);
 

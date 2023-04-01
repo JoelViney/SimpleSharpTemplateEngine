@@ -1,6 +1,4 @@
 ﻿using SimpleSharpTemplateEngine.Models;
-using System;
-using System.Linq;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine
