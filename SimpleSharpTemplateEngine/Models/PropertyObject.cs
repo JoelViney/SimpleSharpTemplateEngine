@@ -1,13 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
     internal class PropertyObject : ITemplateObject
     {
-        public string PropertyName { get; set; }
+        public string PropertyName { get; }
+
+        public PropertyObject(string propertyName)
+        {
+            this.PropertyName = propertyName;
+        }
 
         public StringBuilder Process(object model)
         {

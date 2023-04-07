@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class LoopObject : ITemplateObject
+    internal class IfNotObject : ITemplateObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public LoopObject(string propertyName, ContainerObject contents)
+        public IfNotObject(string propertyName, ContainerObject contents)
         {
             this.PropertyName = propertyName;
             this.Contents = contents;
@@ -22,19 +21,24 @@ namespace SimpleSharpTemplateEngine.Models
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
             if (property == null)
-                throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
-
-            if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
-                throw new Exception($"The loop variable ##{this.PropertyName}## isn't Enumerable.");
-
-            var enumerable = (IEnumerable)property.GetValue(model, null);
-
-            var builder = new StringBuilder();
-            foreach (var child in enumerable)
             {
-                builder.Append(this.Contents.Process(child));
+                throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
             }
-            return builder;
+            if (!typeof(bool).IsAssignableFrom(property.PropertyType))
+            {
+                throw new Exception($"The if variable ##{this.PropertyName}## isn't a boolean.");
+            }
+
+            bool value = (bool)property.GetValue(model, null);
+
+            if (!value)
+            {
+                return this.Contents.Process(model);
+            }
+            else
+            {
+                return new StringBuilder();
+            }
         }
     }
 }

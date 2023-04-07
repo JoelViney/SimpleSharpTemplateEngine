@@ -6,19 +6,20 @@ namespace SimpleSharpTemplateEngine
     /// <summary>
     /// This is a templating engine. See the unit tests for how it works.
     /// </summary>
-    /// <remarks>
-    /// I should never have written this, I should have used a 3rd party, but it was fun to write.
-    /// </remarks>
-    public class TemplateEngine
+    public static class TemplateEngine
     {
+        public static char CommandDelimiterStart = '#'; // It uses two of these to work out where commands start and end.
+        public static char CommandDelimiterEnd = '#';
+
         private enum State
         {
             None,
             Loop,
             If,
+            IfNot
         }
 
-        public string Execute(string text, object model)
+        public static string Execute(string text, object model)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
@@ -27,7 +28,7 @@ namespace SimpleSharpTemplateEngine
             return output.ToString();
         }
 
-        private StringBuilder ExecuteInternal(string text, object model)
+        private static StringBuilder ExecuteInternal(string text, object model)
         {
 
             var i = 0;
@@ -38,7 +39,7 @@ namespace SimpleSharpTemplateEngine
             return builder;
         }
 
-        private ContainerObject BuildObjectModel(State state, string text, ref int i)
+        private static ContainerObject BuildObjectModel(State state, string text, ref int i)
         {
             var result = new ContainerObject();
 
@@ -48,7 +49,11 @@ namespace SimpleSharpTemplateEngine
             {
                 char ch = text[i];
 
-                if (ch != '#' || i == (text.Length - 1) || text[i + 1] != '#')
+                if (
+                    (!parseCommand && (ch != CommandDelimiterStart || i == (text.Length - 1) || text[i + 1] != CommandDelimiterStart))
+                    ||
+                    (parseCommand && (ch != CommandDelimiterEnd || i == (text.Length - 1) || text[i + 1] != CommandDelimiterEnd))
+                    )
                 {
                     // Process Text / Command
                     if (parseCommand)
@@ -83,18 +88,27 @@ namespace SimpleSharpTemplateEngine
                     command = command.Substring("IF:".Length);
 
                     i++;
-                    var obj = new IfObject()
-                    {
-                        PropertyName = command,
-                        Contents = this.BuildObjectModel(State.If, text, ref i)
-                    };
+                    var contents = TemplateEngine.BuildObjectModel(State.If, text, ref i);
+                    var obj = new IfObject(command, contents);
+
+                    result.Items.Add(obj);
+                }
+                else if(command.StartsWith("IFNOT:"))
+                {
+                    command = command.Substring("IFNOT:".Length);
+
+                    i++;
+                    var contents = TemplateEngine.BuildObjectModel(State.IfNot, text, ref i);
+                    var obj = new IfNotObject(command, contents);
 
                     result.Items.Add(obj);
                 }
                 else if (command == "ENDIF")
                 {
-                    if (state != State.If)
-                        throw new Exception($"Unexpected IF at character {i}"); // This shouldn't happen, we have a malformed template.
+                    if (state != State.If && state != State.IfNot)
+                    {
+                        throw new Exception($"Unexpected ENDIF at character {i}");
+                    }
 
                     return result;
                 }
@@ -103,11 +117,8 @@ namespace SimpleSharpTemplateEngine
                     command = command.Substring("STARTLOOP:".Length);
 
                     i++;
-                    var obj = new LoopObject()
-                    {
-                        PropertyName = command,
-                        Contents = this.BuildObjectModel(State.Loop, text, ref i)
-                    };
+                    var contents = TemplateEngine.BuildObjectModel(State.Loop, text, ref i);
+                    var obj = new LoopObject(command, contents);
 
                     result.Items.Add(obj);
                 }
@@ -121,7 +132,7 @@ namespace SimpleSharpTemplateEngine
                 else
                 {
                     // Found a Property.
-                    var property = new PropertyObject() { PropertyName = command };
+                    var property = new PropertyObject(command);
                     result.Items.Add(property);
                 }
 

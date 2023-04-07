@@ -4,11 +4,11 @@ namespace SimpleSharpTemplateEngine.Models
 {
     internal class TextObject : ITemplateObject
     {
-        public StringBuilder Text { get; set; }
+        public StringBuilder Text { get; }
 
         public TextObject()
         {
-            Text = new StringBuilder();
+            this.Text = new StringBuilder();
         }
 
         public StringBuilder Process(object model)

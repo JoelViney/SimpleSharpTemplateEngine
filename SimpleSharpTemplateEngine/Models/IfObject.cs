@@ -1,14 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
     internal class IfObject : ITemplateObject
     {
-        public string PropertyName { get; set; }
-        public ContainerObject Contents { get; set; }
+        public string PropertyName { get; }
+        public ContainerObject Contents { get; }
+
+        public IfObject(string propertyName, ContainerObject contents)
+        {
+            this.PropertyName = propertyName;
+            this.Contents = contents;            
+        }
 
         public StringBuilder Process(object model)
         {
