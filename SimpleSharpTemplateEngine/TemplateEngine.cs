@@ -96,10 +96,12 @@ namespace SimpleSharpTemplateEngine
                 }
 
                 command = CleanCommandText(command);
+                var commandLowerCase = command.ToLower();
 
-                if (command.StartsWith("if:"))
+                if (commandLowerCase.StartsWith("if:"))
                 {
-                    var args = command.Substring("if:".Length).Replace("-", "");
+                    var args = command.Substring("if:".Length);
+                    args = CleanPropertyName(args);
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.If, text, ref i);
@@ -107,9 +109,10 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if(command.StartsWith("ifnot:"))
+                else if(commandLowerCase.StartsWith("ifnot:"))
                 {
-                    var args = command.Substring("ifnot:".Length).Replace("-", "");
+                    var args = command.Substring("ifnot:".Length);
+                    args = CleanPropertyName(args);
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.IfNot, text, ref i);
@@ -117,7 +120,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (command == "endif")
+                else if (commandLowerCase == "endif")
                 {
                     if (state != State.If && state != State.IfNot)
                     {
@@ -126,9 +129,10 @@ namespace SimpleSharpTemplateEngine
 
                     return result;
                 }
-                else if (command.StartsWith("switch:"))
+                else if (commandLowerCase.StartsWith("switch:"))
                 {
-                    var args = command.Substring("switch:".Length).Replace("-", "");
+                    var args = command.Substring("switch:".Length);
+                    args = CleanPropertyName(args);
 
                     i++;
 
@@ -140,7 +144,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (command == "endswitch")
+                else if (commandLowerCase == "endswitch")
                 {
                     if (state != State.Switch)
                     {
@@ -149,9 +153,10 @@ namespace SimpleSharpTemplateEngine
 
                     return result;
                 }
-                else if (command.StartsWith("case:"))
+                else if (commandLowerCase.StartsWith("case:"))
                 {
-                    var args = command.Substring("case:".Length).Replace("-", "");
+                    var args = command.Substring("case:".Length);
+                    args = CleanPropertyName(args);
 
                     i++;
                     TemplateEngine.SkipNewLine(text, ref i);
@@ -160,7 +165,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (command == "endcase")
+                else if (commandLowerCase == "endcase")
                 {
                     if (state != State.SwitchCase)
                     {
@@ -169,9 +174,10 @@ namespace SimpleSharpTemplateEngine
 
                     return result;
                 }
-                else if (command.StartsWith("loop:"))
+                else if (commandLowerCase.StartsWith("loop:"))
                 {
-                    var args = command.Substring("loop:".Length).Replace("-", ""); 
+                    var args = command.Substring("loop:".Length);
+                    args = CleanPropertyName(args);
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.Loop, text, ref i);
@@ -179,11 +185,11 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (command == "endloop")
+                else if (commandLowerCase == "endloop")
                 {
                     if (state != State.Loop)
                     {
-                        throw new TemplateEngineException($"Unexpected STARTLOOP at character {i}"); // This shouldn't happen, we have a malformed template.
+                        throw new TemplateEngineException($"Unexpected 'endloop' at character {i}"); // This shouldn't happen, we have a malformed template.
                     }
 
                     return result;
@@ -191,7 +197,7 @@ namespace SimpleSharpTemplateEngine
                 else
                 {
                     // Found a Property.
-                    var propertyName = CleanPropertyName(command);
+                    var propertyName = CleanPropertyName(command); // Use the original command to save the correct case.
                     var property = new PropertyObject(propertyName);
                     result.Items.Add(property);
                 }
@@ -205,7 +211,7 @@ namespace SimpleSharpTemplateEngine
 
         private static string CleanCommandText(string command)
         {
-            return command.ToLower().Replace(" ", "").Trim();
+            return command.Replace(" ", "").Trim();
         }
 
         private static string CleanPropertyName(string text)
@@ -215,10 +221,15 @@ namespace SimpleSharpTemplateEngine
 
         private static void SkipNewLine(string text, ref int i)
         {
+            if (i >= text.Length)
+            {
+                return; // End of template
+            }
             if (text[i] == '\r') 
             {
                 i++;
             }
+
             if (text[i] == '\n')
             {
                 i++;

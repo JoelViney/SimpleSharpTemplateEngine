@@ -10,32 +10,37 @@ namespace SimpleSharpTemplateEngine
     [TestClass]
     public class IfNotTests
     {
-        [TestMethod]
-        public void IfNotIsTrue()
+        [DataTestMethod]
+        [DataRow("{{ifnot:MyProperty1}}Hello World.{{endif}}", "Hello World.")]
+        [DataRow("{{ ifnot:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ if not:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ ifnot: my-property1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ IFNOT: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
+        [DataRow(">>>{{ ifnot:MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
+        public void IfNotIsApplied(string text, string expected)
         {
             // Arrange
-            var text = ".{{IFNOT:MyProperty1}}abc{{ENDIF}}.";
             var model = new NotIfModel() { MyProperty1 = false };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual(".abc.", result);
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
-        public void IfNotIsFalse()
+        public void IfNotIsntApplied()
         {
             // Arrange
-            var text = ".{{IFNOT:MyProperty1}}This text is inside the If{{ENDIF}}.";
+            var text = "{{IFNOT:MyProperty1}}This text is inside the If{{ENDIF}}";
             var model = new NotIfModel() { MyProperty1 = true };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual("..", result);
+            Assert.AreEqual("", result);
         }
 
     }

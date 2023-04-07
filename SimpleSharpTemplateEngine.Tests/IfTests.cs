@@ -11,11 +11,12 @@ namespace SimpleSharpTemplateEngine
     [TestClass]
     public class IfTests
     {
-        [TestMethod]
+        [DataTestMethod]
         [DataRow("{{if:MyProperty1}}Hello World.{{endif}}", "Hello World.")]
-        [DataRow("{{ if:MyProperty1 }}Hello World.{{ endif }}", "Hello World.")]
-        [DataRow("{{ if: my-property1 }}Hello World.{{ endif }}", "Hello World.")]
+        [DataRow("{{ if:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ if: my-property1 }}Hello World.{{ end if }}", "Hello World.")]
         [DataRow("{{ IF: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
+        [DataRow(">>>{{ if:MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
         public void IfTrue(string text, string expected)
         {
             // Arrange
@@ -32,14 +33,14 @@ namespace SimpleSharpTemplateEngine
         public void IfFalse()
         {
             // Arrange
-            var text = ".{{IF:MyProperty1}}This text is inside the If{{ENDIF}}.";
+            var text = "{{ if: MyProperty1 }}This text is inside the If{{ end if }}";
             var model = new IfModel() { MyProperty1 = false };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual("..", result);
+            Assert.AreEqual("", result);
         }
 
         [TestMethod]
