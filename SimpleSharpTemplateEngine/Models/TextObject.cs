@@ -2,6 +2,9 @@
 
 namespace SimpleSharpTemplateEngine.Models
 {
+    /// <summary>
+    /// Represents a block of text.
+    /// </summary>
     internal class TextObject : ITemplateObject
     {
         public StringBuilder Text { get; }

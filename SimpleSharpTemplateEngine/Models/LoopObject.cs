@@ -22,18 +22,23 @@ namespace SimpleSharpTemplateEngine.Models
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
             if (property == null)
-                throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
+                throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
 
             if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
-                throw new Exception($"The loop variable ##{this.PropertyName}## isn't Enumerable.");
+                throw new TemplateEngineException($"The loop variable ##{this.PropertyName}## isn't Enumerable.");
 
-            var enumerable = (IEnumerable)property.GetValue(model, null);
+            var enumerable = property.GetValue(model, null) as IEnumerable;
 
             var builder = new StringBuilder();
-            foreach (var child in enumerable)
+
+            if (enumerable != null)
             {
-                builder.Append(this.Contents.Process(child));
+                foreach (var child in enumerable)
+                {
+                    builder.Append(this.Contents.Process(child));
+                }
             }
+
             return builder;
         }
     }

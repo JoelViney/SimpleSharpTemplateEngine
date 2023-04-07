@@ -1,36 +1,53 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 
 namespace SimpleSharpTemplateEngine
 {
     public class TemplateModel
     {
-        public string Name { get; set; }
+        public string MyName { get; set; }
     }
 
     [TestClass]
     public class TemplateTests
     {
-        [TestMethod]
-        public void JustText()
+
+        [DataTestMethod]
+        [DataRow("Hello {{myname}}.", "Hello World.")]
+        [DataRow("Hello {{my-name}}.", "Hello World.")]
+        [DataRow("Hello {{ myname }}.", "Hello World.")]
+        [DataRow("Hello {{ my-name }}.", "Hello World.")]
+        public void ReplaceText(string text, string expected)
         {
             // Arrange
-            var text = "Hello World.";
-            var model = new TemplateModel() { Name = "abc" };
+            var model = new TemplateModel() { MyName = "World" };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual("Hello World.", result);
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
-        public void ReplaceText()
+        public void EmptyTemplate()
         {
             // Arrange
-            var text = "Hello ##name##.";
-            var model = new TemplateModel() { Name = "World" };
+            var text = "";
+            var model = new TemplateModel();
+
+            // Act
+            var result = TemplateEngine.Execute(text, model);
+
+            // Assert
+            Assert.AreEqual("", result);
+        }
+
+        [TestMethod]
+        public void JustText()
+        {
+            // Arrange
+            var text = "Hello World.";
+            var model = new TemplateModel();
 
             // Act
             var result = TemplateEngine.Execute(text, model);

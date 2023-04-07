@@ -11,7 +11,7 @@ namespace SimpleSharpTemplateEngine
 
     public class CombinedChildModel
     {
-        public string Name { get; set; }
+        public string MyName { get; set; }
     }
 
     [TestClass]
@@ -21,11 +21,11 @@ namespace SimpleSharpTemplateEngine
         public void IfThenLoop()
         {
             // Arrange
-            var text = ".##IF:MyProperty1##.##STARTLOOP:mylist##|##name##|##ENDLOOP##.##ENDIF##.";
+            var text = ".{{IF:MyProperty1}}.{{STARTLOOP:mylist}}|{{myname}}|{{ENDLOOP}}.{{ENDIF}}.";
             var model = new CombinedModel
             {
                 MyProperty1 = true,
-                MyList = new List<CombinedChildModel>(new[] { new CombinedChildModel() { Name = "One" }, new CombinedChildModel() { Name = "Two" } })
+                MyList = new List<CombinedChildModel>(new[] { new CombinedChildModel() { MyName = "One" }, new CombinedChildModel() { MyName = "Two" } })
             };
 
             // Act

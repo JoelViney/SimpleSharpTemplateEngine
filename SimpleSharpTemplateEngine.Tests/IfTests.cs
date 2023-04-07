@@ -12,24 +12,27 @@ namespace SimpleSharpTemplateEngine
     public class IfTests
     {
         [TestMethod]
-        public void IfTrue()
+        [DataRow("{{if:MyProperty1}}Hello World.{{endif}}", "Hello World.")]
+        [DataRow("{{ if:MyProperty1 }}Hello World.{{ endif }}", "Hello World.")]
+        [DataRow("{{ if: my-property1 }}Hello World.{{ endif }}", "Hello World.")]
+        [DataRow("{{ IF: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
+        public void IfTrue(string text, string expected)
         {
             // Arrange
-            var text = ".##IF:MyProperty1##abc##ENDIF##.";
             var model = new IfModel() { MyProperty1 = true };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual(".abc.", result);
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
         public void IfFalse()
         {
             // Arrange
-            var text = ".##IF:MyProperty1##This text is inside the If##ENDIF##.";
+            var text = ".{{IF:MyProperty1}}This text is inside the If{{ENDIF}}.";
             var model = new IfModel() { MyProperty1 = false };
 
             // Act
@@ -43,7 +46,7 @@ namespace SimpleSharpTemplateEngine
         public void NestedIf()
         {
             // Arrange
-            var text = ".##IF:MyProperty1##.##IF:MyProperty2##|Test|##ENDIF##.##ENDIF##.";
+            var text = ".{{IF:MyProperty1}}.{{IF:MyProperty2}}|Test|{{ENDIF}}.{{ENDIF}}.";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
@@ -57,7 +60,7 @@ namespace SimpleSharpTemplateEngine
         public void NestedIfInnerFalse()
         {
             // Arrange
-            var text = ".##IF:MyProperty1##.##IF:MyProperty2##|Test|##ENDIF##.##ENDIF##.";
+            var text = ".{{IF:MyProperty1}}.{{IF:MyProperty2}}|Test|{{ENDIF}}.{{ENDIF}}.";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = false };
 
             // Act

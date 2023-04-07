@@ -6,3 +6,4 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0270:Use coalesce expression", Justification = "I am old school", Scope = "module")]
+[assembly: SuppressMessage("Style", "IDE0057:Use range operator", Justification = "I am old school", Scope = "module")]

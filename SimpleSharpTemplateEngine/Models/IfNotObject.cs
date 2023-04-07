@@ -22,22 +22,22 @@ namespace SimpleSharpTemplateEngine.Models
 
             if (property == null)
             {
-                throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
+                throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
             }
             if (!typeof(bool).IsAssignableFrom(property.PropertyType))
             {
-                throw new Exception($"The if variable ##{this.PropertyName}## isn't a boolean.");
+                throw new TemplateEngineException($"The if variable ##{this.PropertyName}## isn't a boolean.");
             }
 
-            bool value = (bool)property.GetValue(model, null);
+            var value = property.GetValue(model) as bool?;
 
-            if (!value)
+            if (value == true)
             {
-                return this.Contents.Process(model);
+                return new StringBuilder();
             }
             else
             {
-                return new StringBuilder();
+                return this.Contents.Process(model);
             }
         }
     }

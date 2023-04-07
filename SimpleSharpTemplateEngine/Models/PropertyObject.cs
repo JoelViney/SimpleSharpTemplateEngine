@@ -20,12 +20,20 @@ namespace SimpleSharpTemplateEngine.Models
 
             if (property == null)
             {
-                throw new Exception($"Unable to locate the property ##{this.PropertyName}##");
+                throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
             }
 
-            var value = modelType.GetProperty(property.Name).GetValue(model);
+            var objValue = modelType.GetProperty(property.Name)!.GetValue(model);
 
-            return new StringBuilder(value.ToString());
+            var value = objValue as string;
+            if (value != null)
+            {
+                return new StringBuilder(value);
+            }
+            else
+            {
+                return new StringBuilder();
+            }
         }
     }
 }

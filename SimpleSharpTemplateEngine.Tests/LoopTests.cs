@@ -10,7 +10,7 @@ namespace SimpleSharpTemplateEngine
 
     public class LoopChildModel
     {
-        public string Name { get; set; }
+        public string MyName { get; set; }
     }
 
     [TestClass]
@@ -21,10 +21,10 @@ namespace SimpleSharpTemplateEngine
         public void Loop()
         {
             // Arrange
-            var text = ".##STARTLOOP:mylist##|##name##|##ENDLOOP##.";
+            var text = ".{{LOOP:mylist}}|{{myname}}|{{ENDLOOP}}.";
             var model = new LoopModel
             {
-                MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { Name = "One" }, new LoopChildModel() { Name = "Two" } })
+                MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { MyName = "One" }, new LoopChildModel() { MyName = "Two" } })
             };
             // Act
             var result = TemplateEngine.Execute(text, model);
@@ -38,7 +38,7 @@ namespace SimpleSharpTemplateEngine
         public void EmptyLoop()
         {
             // Arrange
-            var text = ".##STARTLOOP:mylist##|##name##|##ENDLOOP##.";
+            var text = ".{{LOOP:mylist}}|{{myname}}|{{ENDLOOP}}.";
             var model = new LoopModel
             {
                 MyList = new List<LoopChildModel>()
@@ -55,10 +55,10 @@ namespace SimpleSharpTemplateEngine
         public void LoopThenLoop()
         {
             // Arrange
-            var text = ".##STARTLOOP:mylist##|##name##|##ENDLOOP##.##STARTLOOP:mylist##|##name##|##ENDLOOP##.";
+            var text = ".{{LOOP:mylist}}|{{myname}}|{{ENDLOOP}}.{{LOOP:mylist}}|{{myname}}|{{ENDLOOP}}.";
             var model = new LoopModel
             {
-                MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { Name = "One" }, new LoopChildModel() { Name = "Two" } })
+                MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { MyName = "One" }, new LoopChildModel() { MyName = "Two" } })
             };
 
             // Act

@@ -14,7 +14,7 @@ namespace SimpleSharpTemplateEngine
         public void IfNotIsTrue()
         {
             // Arrange
-            var text = ".##IFNOT:MyProperty1##abc##ENDIF##.";
+            var text = ".{{IFNOT:MyProperty1}}abc{{ENDIF}}.";
             var model = new NotIfModel() { MyProperty1 = false };
 
             // Act
@@ -28,7 +28,7 @@ namespace SimpleSharpTemplateEngine
         public void IfNotIsFalse()
         {
             // Arrange
-            var text = ".##IFNOT:MyProperty1##This text is inside the If##ENDIF##.";
+            var text = ".{{IFNOT:MyProperty1}}This text is inside the If{{ENDIF}}.";
             var model = new NotIfModel() { MyProperty1 = true };
 
             // Act
