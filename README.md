@@ -8,15 +8,15 @@ To use it you pass in a template and an object with properties and the output is
 
 
 ```
-var text = "Hello {{myname}}.";
+var text = "Hello {{ MyProperty }}.";
 var model = new TestModel() 
 { 
-    MyName = "World" 
+    MyProperty = "World" 
 };
 
 var result = TemplateEngine.Execute(text, model);
 
-// The result will be 'Hello World'
+// The result will be 'Hello World.'
 ```
 
 
@@ -24,30 +24,30 @@ var result = TemplateEngine.Execute(text, model);
 
 ###### Property Assignment:
 ```
-{{ myProperty }}
+{{ MyProperty }}
 ```
 
 ###### If Statements
 ```
-{{ if: myProperty }}
+{{ if: MyProperty }}
 {{ end if }}
 ```
 
 ###### If Not Statements
 ```
-{{ if not: myProperty }}
+{{ if not: MyProperty }}
 {{ end if }}
 ```
 
 ###### Loops
 ```
-{{ loop:myList }}
-{{ end }}
+{{ loop: MyList }}
+{{ end loop }}
 ```
 
 ###### Switch
 ```
-{{ switch: myProperty }}
+{{ switch: MyProperty }}
 {{ case: 1 }}
 {{ end case }}
 {{{ end switch }}
@@ -55,6 +55,15 @@ var result = TemplateEngine.Execute(text, model);
 
 
 ## Other Features
+
+
+###### Nesting
+```
+{{ if: MyPoperty }}
+{{ loop: MyList }}
+{{ end loop }}
+{{ end if }}
+```
 
 ###### Kebab Case
 ```
@@ -64,12 +73,12 @@ var result = TemplateEngine.Execute(text, model);
 
 ###### Case Insensitive
 ```
-{{ IF: my-property }}
+{{ IF: myproperty }}
 {{ END IF }}
 ```
 
-###### Flexable spacing
+###### Not strict on spacing
 ```
-{{IF:my-property}}
-{{END IF}}
+{{IF:MyProperty}}
+{{ENDIF}}
 ```
