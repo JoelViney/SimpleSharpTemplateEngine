@@ -1,10 +1,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace SimpleSharpTemplateEngine
 {
     public class TemplateModel
     {
-        public string MyName { get; set; }
+        public string MyProperty { get; set; }
     }
 
     [TestClass]
@@ -12,14 +13,13 @@ namespace SimpleSharpTemplateEngine
     {
 
         [DataTestMethod]
-        [DataRow("Hello {{myname}}.", "Hello World.")]
-        [DataRow("Hello {{my-name}}.", "Hello World.")]
-        [DataRow("Hello {{ myname }}.", "Hello World.")]
-        [DataRow("Hello {{ my-name }}.", "Hello World.")]
+        [DataRow("Hello {{ MyProperty }}.", "Hello World.")]
+        [DataRow("Hello {{ my-property }}.", "Hello World.")]
+        [DataRow("Hello {{myproperty}}.", "Hello World.")]
         public void ReplaceText(string text, string expected)
         {
             // Arrange
-            var model = new TemplateModel() { MyName = "World" };
+            var model = new TemplateModel() { MyProperty = "World" };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
@@ -54,6 +54,34 @@ namespace SimpleSharpTemplateEngine
 
             // Assert
             Assert.AreEqual("Hello World.", result);
+        }
+
+        [TestMethod]
+        public void NullProperty()
+        {
+            // Arrange
+            var text = "Hello {{ MyProperty }}.";
+            var model = new TemplateModel() { MyProperty = null };
+
+            // Act
+            var result = TemplateEngine.Execute(text, model);
+
+            // Assert
+            Assert.AreEqual("Hello .", result);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(TemplateEngineException))]
+        public void CommandBlockWithoutClosingStatement()
+        {
+            // Arrange
+            var text = "Hello {{ MyProperty.";
+            var model = new TemplateModel();
+
+            // Act
+            TemplateEngine.Execute(text, model);
+
+            // Assert - Expecting an exception
         }
     }
 }

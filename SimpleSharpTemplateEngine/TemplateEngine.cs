@@ -1,4 +1,5 @@
 ﻿using SimpleSharpTemplateEngine.Models;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -206,6 +207,13 @@ namespace SimpleSharpTemplateEngine
                 command = "";
             }
 
+            if (parseCommand)
+            {
+                // We are currently parsing a command and ran out of text.
+                // This means we have an invalid template
+                var pos = text.Length - command.Length - "{{".Length;
+                throw new TemplateEngineException($"Unexpected end of template, failed to find a closing command bracket for the command at character {pos}.");
+            }
             return result;
         }
 
