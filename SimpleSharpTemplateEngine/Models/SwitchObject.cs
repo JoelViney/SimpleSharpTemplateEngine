@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -43,7 +42,7 @@ namespace SimpleSharpTemplateEngine.Models
             { 
                 if (switchCase.MatchExpression(value))
                 {
-                    return switchCase.Contents.Process(model);
+                    return switchCase.Process(model);
                 }
             }
 

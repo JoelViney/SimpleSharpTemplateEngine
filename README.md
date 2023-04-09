@@ -29,7 +29,9 @@ var result = TemplateEngine.Execute(text, model);
 
 ###### If Statements
 ```
-{{ if: MyProperty }}
+{{ if: MyProperty1 }}
+{{ else if: MyProperty2 }}
+{{ else }}
 {{ end if }}
 ```
 
@@ -81,4 +83,33 @@ var result = TemplateEngine.Execute(text, model);
 ```
 {{IF:MyProperty}}
 {{ENDIF}}
+```
+
+## How it works?
+
+The engine builds up an object model representing the template. e.g.
+
+```
+{{ if: MyProperty }}
+Hello World
+{{ end if }}
+```
+
+would build an object model that looks like
+
+```
+ContainerObject
+    .Items[0] =
+        IfObject
+            .Property = "MyProperty"
+            .ContainerObject = 
+                TextObject
+                    .Text = "Hello World"               
+    ]
+```
+
+once the object model is built it is processed with the process command in an object oriented approach.
+
+```
+var stringBuilder = templateObjectModel.Process(model);
 ```

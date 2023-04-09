@@ -3,18 +3,18 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class IfNotObject : ITemplateObject
+    internal class IfNotObject : IIfStatementObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public IfNotObject(string propertyName, ContainerObject contents)
+        public IfNotObject(string propertyName)
         {
             this.PropertyName = propertyName;
-            this.Contents = contents;
+            this.Contents = new ContainerObject();
         }
 
-        public StringBuilder Process(object model)
+        public bool MatchesExpression(object model)
         {
             Type modelType = model.GetType();
             PropertyInfo[] properties = modelType.GetProperties();
@@ -31,14 +31,12 @@ namespace SimpleSharpTemplateEngine.Models
 
             var value = property.GetValue(model) as bool?;
 
-            if (value == true)
-            {
-                return new StringBuilder();
-            }
-            else
-            {
-                return this.Contents.Process(model);
-            }
+            return (value != true);
+        }
+
+        public StringBuilder Process(object model)
+        {
+            return this.Contents.Process(model);
         }
     }
 }

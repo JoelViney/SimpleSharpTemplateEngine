@@ -33,7 +33,7 @@ namespace SimpleSharpTemplateEngine
         public void IfFalse()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}This text is inside the If{{ end if }}";
+            var text = "{{ if: MyProperty1 }}Hello World.{{ end if }}";
             var model = new IfModel() { MyProperty1 = false };
 
             // Act
@@ -47,28 +47,44 @@ namespace SimpleSharpTemplateEngine
         public void NestedIf()
         {
             // Arrange
-            var text = ".{{IF:MyProperty1}}.{{IF:MyProperty2}}|Test|{{ENDIF}}.{{ENDIF}}.";
+            var text = "{{ if: MyProperty1 }}{{ if: MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual("..|Test|..", result);
+            Assert.AreEqual("Hello World.", result);
         }
+
+
+        [TestMethod]
+        public void NestedIfInSitu()
+        {
+            // Arrange
+            var text = "This {{ if: MyProperty1 }}is {{ if: MyProperty2 }}Hello World {{ end if }}right {{ end if }}here.";
+            var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
+
+            // Act
+            var result = TemplateEngine.Execute(text, model);
+
+            // Assert
+            Assert.AreEqual("This is Hello World right here.", result);
+        }
+
 
         [TestMethod]
         public void NestedIfInnerFalse()
         {
             // Arrange
-            var text = ".{{IF:MyProperty1}}.{{IF:MyProperty2}}|Test|{{ENDIF}}.{{ENDIF}}.";
+            var text = "{{ if: MyProperty1 }}{{ if: MyProperty2}}Hello World.{{ end if }}{{ endif }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = false };
 
             // Act
             var result = TemplateEngine.Execute(text, model);
 
             // Assert
-            Assert.AreEqual("....", result);
+            Assert.AreEqual("", result);
         }
     }
 }

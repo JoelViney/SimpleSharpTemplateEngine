@@ -1,12 +1,11 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
     internal interface ISwitchCaseObject
     {
         bool MatchExpression(object? value);
-        ContainerObject Contents { get; }
+        StringBuilder Process(object model);
     }
 
     internal class SwitchCaseObject : ISwitchCaseObject, ITemplateObject

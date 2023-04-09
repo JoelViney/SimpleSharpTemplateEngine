@@ -3,15 +3,15 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class IfObject : IIfStatementObject
+    internal class ElseIfObject : IIfStatementObject, ITemplateObject, IIfStatementChainingObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public IfObject(string propertyName)
+        public ElseIfObject(string propertyName, ContainerObject contents)
         {
             this.PropertyName = propertyName;
-            this.Contents = new ContainerObject();            
+            this.Contents = contents;
         }
 
         public bool MatchesExpression(object model)

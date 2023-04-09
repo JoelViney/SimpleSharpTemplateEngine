@@ -1,6 +1,5 @@
 ﻿using SimpleSharpTemplateEngine.Models;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+using System.Diagnostics;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine
@@ -19,6 +18,8 @@ namespace SimpleSharpTemplateEngine
             Loop,
             If,
             IfNot,
+            ElseIf,
+            Else,
             Switch,
             SwitchCase
         }
@@ -45,12 +46,46 @@ namespace SimpleSharpTemplateEngine
         {
             // Convert the template string into an object model containing commands and text.
             var i = 0;
-            var dom = BuildObjectModel(State.None, template, ref i);
 
+            var templateObjectModel = BuildObjectModel(State.None, template, ref i);
+
+            if (Debugger.IsAttached)
+            {
+                DebugObjectModel(templateObjectModel);
+            }
             // Process the object model into text.
-            var builder = dom.Process(model);
+            var stringBuilder = templateObjectModel.Process(model);
 
-            return builder;
+            return stringBuilder;
+        }
+
+        private static void DebugObjectModel(ContainerObject model, int indent = 0)
+        {
+            if (indent == 0)
+            {
+                Debug.WriteLine($"========================================");
+            }
+
+            foreach (var item in model.Items)
+            {
+                if (item is IfChainObject chain)
+                {
+                    Debug.WriteLine($"{new String(' ', (indent * 2))}{item.GetType().Name}");
+                    foreach (var chainItem in chain.Items)
+                    {
+                        DebugObjectModel(chainItem.Contents, indent + 1);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"{new String(' ', (indent * 2))}{item.GetType().Name}");
+                }
+            }
+
+            if (indent == 0)
+            {
+                Debug.WriteLine($"========================================");
+            }
         }
 
         private static ContainerObject BuildObjectModel(State state, string text, ref int i)
@@ -98,42 +133,117 @@ namespace SimpleSharpTemplateEngine
 
                 command = CleanCommandText(command);
                 var commandLowerCase = command.ToLower();
+                
+                // pull out the args.
+                string? args = null;
+                if (command.Contains(':'))
+                {
+                    var pos = command.IndexOf(':');
+                    args = command.Substring(pos + 1);
+                    args = CleanPropertyName(args);
+                }
 
                 if (commandLowerCase.StartsWith("if:"))
                 {
-                    var args = command.Substring("if:".Length);
-                    args = CleanPropertyName(args);
+                    if (args == null)
+                    {
+                        throw new TemplateEngineException($"No arguments provided to the 'if' at character {i}");
+                    }
 
                     i++;
+                    // This will return the contents of the if statement and all chaining if, else if and elses
                     var contents = TemplateEngine.BuildObjectModel(State.If, text, ref i);
-                    var obj = new IfObject(args, contents);
+
+                    var obj = new IfChainObject();
+                    var ifObject = new IfObject(args);
+                    obj.Items.Add(ifObject);
+
+                    // Keep adding it until we hit an if chaining object.
+                    foreach (var item in contents.Items)
+                    {
+                        if (item is IIfStatementChainingObject && item is IIfStatementObject childObject)
+                        {
+                            obj.Items.Add(childObject);
+                        }
+                        else
+                        {
+                            ifObject.Contents.Items.Add(item);
+                        }
+                    }
 
                     result.Items.Add(obj);
                 }
                 else if(commandLowerCase.StartsWith("ifnot:"))
                 {
-                    var args = command.Substring("ifnot:".Length);
-                    args = CleanPropertyName(args);
+
+                    if (args == null)
+                    {
+                        throw new TemplateEngineException($"No arguments provided to the 'ifnot' at character {i}");
+                    }
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.IfNot, text, ref i);
-                    var obj = new IfNotObject(args, contents);
+
+                    var obj = new IfChainObject();
+                    var ifObject = new IfNotObject(args);
+                    obj.Items.Add(ifObject);
+
+                    // Keep adding it until we hit an if chaining object.
+                    foreach (var item in contents.Items)
+                    {
+                        if (item is IIfStatementChainingObject && item is IIfStatementObject childObject)
+                        {
+                            obj.Items.Add(childObject);
+                        }
+                        else
+                        {
+                            ifObject.Contents.Items.Add(item);
+                        }
+                    }
+
+                    result.Items.Add(obj);
+                }
+                else if (commandLowerCase.StartsWith("elseif:"))
+                {
+                    if (state != State.If && state != State.IfNot && state != State.ElseIf)
+                    {
+                        throw new TemplateEngineException($"Unexpected 'else' at character {i}");
+                    }
+
+                    if (args == null)
+                    {
+                        throw new TemplateEngineException($"No arguments provided to the 'else' at character {i}");
+                    }
+
+                    i++;
+                    var contents = TemplateEngine.BuildObjectModel(State.ElseIf, text, ref i);
+                    var obj = new ElseIfObject(args, contents);
+
+                    result.Items.Add(obj);
+                }
+                else if (commandLowerCase.StartsWith("else"))
+                {
+                    if (state != State.If && state != State.IfNot && state != State.ElseIf)
+                        throw new TemplateEngineException($"Unexpected 'else' at character {i}");
+
+                    i++;
+                    var contents = TemplateEngine.BuildObjectModel(State.Else, text, ref i);
+                    var obj = new ElseObject(contents);
 
                     result.Items.Add(obj);
                 }
                 else if (commandLowerCase == "endif")
                 {
-                    if (state != State.If && state != State.IfNot)
-                    {
+                    if (state != State.If && state != State.IfNot && state != State.ElseIf && state != State.Else)
                         throw new TemplateEngineException($"Unexpected 'endif' at character {i}");
-                    }
 
                     return result;
                 }
                 else if (commandLowerCase.StartsWith("switch:"))
                 {
-                    var args = command.Substring("switch:".Length);
-                    args = CleanPropertyName(args);
+                    if (args == null)
+                        throw new TemplateEngineException($"No arguments provided to the 'switch' at character {i}");
+                    
 
                     i++;
 
@@ -156,8 +266,8 @@ namespace SimpleSharpTemplateEngine
                 }
                 else if (commandLowerCase.StartsWith("case:"))
                 {
-                    var args = command.Substring("case:".Length);
-                    args = CleanPropertyName(args);
+                    if (args == null)
+                        throw new TemplateEngineException($"No arguments provided to the 'case' at character {i}");
 
                     i++;
                     TemplateEngine.SkipNewLine(text, ref i);
@@ -177,8 +287,8 @@ namespace SimpleSharpTemplateEngine
                 }
                 else if (commandLowerCase.StartsWith("loop:"))
                 {
-                    var args = command.Substring("loop:".Length);
-                    args = CleanPropertyName(args);
+                    if (args == null)
+                        throw new TemplateEngineException($"No arguments provided to the 'loop' at character {i}");
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.Loop, text, ref i);

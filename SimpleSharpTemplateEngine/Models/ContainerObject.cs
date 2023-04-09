@@ -11,6 +11,11 @@ namespace SimpleSharpTemplateEngine.Models
             this.Items = new List<ITemplateObject>();
         }
 
+        public ContainerObject(ITemplateObject item)
+        {
+            this.Items = new List<ITemplateObject>() { item };
+        }
+
         public StringBuilder Process(object model)
         {
             var builder = new StringBuilder();
