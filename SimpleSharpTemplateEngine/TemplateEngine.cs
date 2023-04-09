@@ -41,7 +41,26 @@ namespace SimpleSharpTemplateEngine
             return output.ToString();
         }
 
-
+        /*
+         *  The engine builds up an object model representing the template. e.g.
+         *  {{ if: MyProperty }} 
+         *  Hello World
+         *  {{ end if }}
+         *  would build an object model that looks like
+         *  
+         *  ContainerObject
+         *  .Items[0] =
+         *      IfStatement
+         *          .Property = "MyProperty"
+         *          .ContainerObject = 
+         *              TextContainer
+         *                  .Text = "Hello World"               
+         *  ]
+         *  
+         *  once the object model is built it is processed with the Process() command build into the model.
+         *  
+         *  var stringBuilder = templateObjectModel.Process(model);
+        */
         private static StringBuilder ExecuteInternal(string template, object model)
         {
             // Convert the template string into an object model containing commands and text.

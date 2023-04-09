@@ -2,7 +2,7 @@
  
 This is a simple C# templating engine where you pass in an object and it will build a document for you. I shouldn't have written it, but it was fun.
 
-To use it you pass in a template and an object with properties and the output is built from the model's values.
+To use it you pass in a template and a strongly typed object with properties and the output is built from the model's values.
 
 ## Example
 
@@ -83,33 +83,4 @@ var result = TemplateEngine.Execute(text, model);
 ```
 {{IF:MyProperty}}
 {{ENDIF}}
-```
-
-## How it works?
-
-The engine builds up an object model representing the template. e.g.
-
-```
-{{ if: MyProperty }}
-Hello World
-{{ end if }}
-```
-
-would build an object model that looks like
-
-```
-ContainerObject
-    .Items[0] =
-        IfStatement
-            .Property = "MyProperty"
-            .ContainerObject = 
-                TextContainer
-                    .Text = "Hello World"               
-    ]
-```
-
-once the object model is built it is processed with the process command in an object oriented approach.
-
-```
-var stringBuilder = templateObjectModel.Process(model);
 ```
