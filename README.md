@@ -100,10 +100,10 @@ would build an object model that looks like
 ```
 ContainerObject
     .Items[0] =
-        IfObject
+        IfStatement
             .Property = "MyProperty"
             .ContainerObject = 
-                TextObject
+                TextContainer
                     .Text = "Hello World"               
     ]
 ```
