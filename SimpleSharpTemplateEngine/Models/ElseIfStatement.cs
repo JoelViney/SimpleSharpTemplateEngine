@@ -24,6 +24,7 @@ namespace SimpleSharpTemplateEngine.Models
 
             if (property == null)
                 throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
+
             if (!typeof(bool).IsAssignableFrom(property.PropertyType))
                 throw new TemplateEngineException($"The if variable ##{this.PropertyName}## isn't a boolean.");
 

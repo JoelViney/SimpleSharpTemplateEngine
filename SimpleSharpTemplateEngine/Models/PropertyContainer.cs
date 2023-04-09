@@ -21,9 +21,7 @@ namespace SimpleSharpTemplateEngine.Models
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
             if (property == null)
-            {
                 throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
-            }
 
             var objValue = modelType.GetProperty(property.Name).GetValue(model);
 
