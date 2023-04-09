@@ -25,8 +25,7 @@ namespace SimpleSharpTemplateEngine.Models
 
             var objValue = modelType.GetProperty(property.Name)!.GetValue(model);
 
-            var value = objValue as string;
-            if (value != null)
+            if (objValue is string value)
             {
                 return new StringBuilder(value);
             }

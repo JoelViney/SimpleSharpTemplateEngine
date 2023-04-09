@@ -25,12 +25,9 @@ namespace SimpleSharpTemplateEngine
         }
 
         /// <summary>
-        /// 
+        /// Applies the model to the supplied template.
         /// </summary>
-        /// <param name="template"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException">If the model is null this exception will be thrown.</exception>
         /// <exception cref="TemplateEngineException">If the template is invalid because of miss-matched start and end tags this excecption will be thrown.</exception>
         public static string Execute(string template, object model)
         {

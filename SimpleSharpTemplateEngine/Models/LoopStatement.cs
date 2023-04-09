@@ -27,11 +27,9 @@ namespace SimpleSharpTemplateEngine.Models
             if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
                 throw new TemplateEngineException($"The loop variable ##{this.PropertyName}## isn't Enumerable.");
 
-            var enumerable = property.GetValue(model, null) as IEnumerable;
-
             var builder = new StringBuilder();
 
-            if (enumerable != null)
+            if (property.GetValue(model, null) is IEnumerable enumerable)
             {
                 foreach (var child in enumerable)
                 {

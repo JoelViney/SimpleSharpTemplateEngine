@@ -15,9 +15,7 @@ namespace SimpleSharpTemplateEngine.Models
             this.Cases = new List<ISwitchCaseObject>();
             foreach (var item in container.Items) 
             {
-                var switchCase = item as SwitchCaseStatement;
-
-                if (switchCase == null)
+                if (item is not SwitchCaseStatement switchCase)
                 {
                     throw new TemplateEngineException("Invalid item in case statement.");
                 }

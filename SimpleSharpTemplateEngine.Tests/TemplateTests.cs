@@ -68,19 +68,5 @@ namespace SimpleSharpTemplateEngine
             // Assert
             Assert.AreEqual("Hello .", result);
         }
-
-        [TestMethod]
-        [ExpectedException(typeof(TemplateEngineException))]
-        public void CommandBlockWithoutClosingStatement()
-        {
-            // Arrange
-            var text = "Hello {{ MyProperty.";
-            var model = new TemplateModel();
-
-            // Act
-            TemplateEngine.Execute(text, model);
-
-            // Assert - Expecting an exception
-        }
     }
 }

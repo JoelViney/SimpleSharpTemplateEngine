@@ -33,7 +33,7 @@ namespace SimpleSharpTemplateEngine
         public void IfNotIsntApplied()
         {
             // Arrange
-            var text = "{{IFNOT:MyProperty1}}This text is inside the If{{ENDIF}}";
+            var text = "{{ if not: MyProperty1 }}This text is inside the If{{ end if }}";
             var model = new NotIfModel() { MyProperty1 = true };
 
             // Act
