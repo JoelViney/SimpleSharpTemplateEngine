@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -21,13 +23,9 @@ namespace SimpleSharpTemplateEngine.Models
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
             if (property == null)
-            {
                 throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
-            }
             if (!typeof(bool).IsAssignableFrom(property.PropertyType))
-            {
                 throw new TemplateEngineException($"The if variable ##{this.PropertyName}## isn't a boolean.");
-            }
 
             var value = property.GetValue(model) as bool?;
 

@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -15,7 +18,7 @@ namespace SimpleSharpTemplateEngine.Models
             this.Cases = new List<ISwitchCaseObject>();
             foreach (var item in container.Items) 
             {
-                if (item is not SwitchCaseStatement switchCase)
+                if (!(item is SwitchCaseStatement switchCase))
                 {
                     throw new TemplateEngineException("Invalid item in case statement.");
                 }
@@ -29,12 +32,10 @@ namespace SimpleSharpTemplateEngine.Models
             PropertyInfo[] properties = modelType.GetProperties();
             var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
 
-            if (property == null)
-            {
+            if (property == null)          
                 throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
-            }
 
-            var value = modelType.GetProperty(property.Name)!.GetValue(model);
+            var value = modelType.GetProperty(property.Name).GetValue(model);
 
             foreach(var switchCase in this.Cases)
             { 

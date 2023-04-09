@@ -1,5 +1,7 @@
 ﻿using SimpleSharpTemplateEngine.Models;
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine
@@ -106,7 +108,7 @@ namespace SimpleSharpTemplateEngine
                     else
                     {
                         // Build a text object
-                        if (result.Items.Count == 0 || result.Items.LastOrDefault() is not TextContainer txtObject)
+                        if (result.Items.Count == 0 || !(result.Items.LastOrDefault() is TextContainer txtObject))
                         {
                             txtObject = new TextContainer();
                             result.Items.Add(txtObject);
@@ -131,8 +133,8 @@ namespace SimpleSharpTemplateEngine
                 var commandLowerCase = command.ToLower();
                 
                 // Pull out the args.
-                string? args = null;
-                if (command.Contains(':'))
+                string args = null;
+                if (command.Contains(":"))
                 {
                     var pos = command.IndexOf(':');
                     args = command.Substring(pos + 1);

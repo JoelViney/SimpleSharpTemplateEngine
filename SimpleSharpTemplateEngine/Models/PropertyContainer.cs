@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -23,7 +25,7 @@ namespace SimpleSharpTemplateEngine.Models
                 throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
             }
 
-            var objValue = modelType.GetProperty(property.Name)!.GetValue(model);
+            var objValue = modelType.GetProperty(property.Name).GetValue(model);
 
             if (objValue is string value)
             {

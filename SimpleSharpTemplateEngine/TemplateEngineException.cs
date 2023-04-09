@@ -1,4 +1,6 @@
-﻿namespace SimpleSharpTemplateEngine
+﻿using System;
+
+namespace SimpleSharpTemplateEngine
 {
     public class TemplateEngineException: Exception
     {

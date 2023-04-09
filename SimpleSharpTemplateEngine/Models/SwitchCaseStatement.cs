@@ -4,7 +4,7 @@ namespace SimpleSharpTemplateEngine.Models
 {
     internal interface ISwitchCaseObject
     {
-        bool MatchExpression(object? value);
+        bool MatchExpression(object value);
         StringBuilder Process(object model);
     }
 
@@ -19,7 +19,7 @@ namespace SimpleSharpTemplateEngine.Models
             this.Contents = contents;
         }
 
-        public bool MatchExpression(object? value)
+        public bool MatchExpression(object value)
         {
             if (value == null)
             {

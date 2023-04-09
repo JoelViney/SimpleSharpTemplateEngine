@@ -81,6 +81,6 @@ var result = TemplateEngine.Execute(text, model);
 
 ###### Not strict on spacing
 ```
-{{IF:MyProperty}}
-{{ENDIF}}
+{{if:MyProperty}}
+{{endif}}
 ```
