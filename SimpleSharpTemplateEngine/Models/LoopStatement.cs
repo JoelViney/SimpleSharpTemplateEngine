@@ -4,12 +4,12 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class LoopObject : ITemplateObject
+    internal class LoopStatement : ITemplateObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public LoopObject(string propertyName, ContainerObject contents)
+        public LoopStatement(string propertyName, ContainerObject contents)
         {
             this.PropertyName = propertyName;
             this.Contents = contents;

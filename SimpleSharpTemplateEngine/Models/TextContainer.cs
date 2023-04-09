@@ -5,11 +5,11 @@ namespace SimpleSharpTemplateEngine.Models
     /// <summary>
     /// Represents a block of text.
     /// </summary>
-    internal class TextObject : ITemplateObject
+    internal class TextContainer : ITemplateObject
     {
         public StringBuilder Text { get; }
 
-        public TextObject()
+        public TextContainer()
         {
             this.Text = new StringBuilder();
         }

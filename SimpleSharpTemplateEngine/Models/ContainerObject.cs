@@ -2,6 +2,9 @@
 
 namespace SimpleSharpTemplateEngine.Models
 {
+    /// <summary>
+    /// An item that can be processed for output and contains other objects that can be processed.
+    /// </summary>
     internal class ContainerObject : ITemplateObject
     {
         public List<ITemplateObject> Items { get; set; }

@@ -3,11 +3,11 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class PropertyObject : ITemplateObject
+    internal class PropertyContainer : ITemplateObject
     {
         public string PropertyName { get; }
 
-        public PropertyObject(string propertyName)
+        public PropertyContainer(string propertyName)
         {
             this.PropertyName = propertyName;
         }

@@ -3,12 +3,12 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class ElseIfObject : IIfStatementObject, ITemplateObject, IIfStatementChainingObject
+    internal class ElseIfStatement : IIfStatementObject, ITemplateObject, IIfStatementChainingObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public ElseIfObject(string propertyName, ContainerObject contents)
+        public ElseIfStatement(string propertyName, ContainerObject contents)
         {
             this.PropertyName = propertyName;
             this.Contents = contents;

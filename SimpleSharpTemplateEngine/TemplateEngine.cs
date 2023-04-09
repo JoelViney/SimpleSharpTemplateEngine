@@ -68,7 +68,7 @@ namespace SimpleSharpTemplateEngine
 
             foreach (var item in model.Items)
             {
-                if (item is IfChainObject chain)
+                if (item is IfThenElseBlock chain)
                 {
                     Debug.WriteLine($"{new String(' ', (indent * 2))}{item.GetType().Name}");
                     foreach (var chainItem in chain.Items)
@@ -111,9 +111,9 @@ namespace SimpleSharpTemplateEngine
                     }
                     else
                     {
-                        if (result.Items.Count == 0 || result.Items.LastOrDefault() is not TextObject txtObject)
+                        if (result.Items.Count == 0 || result.Items.LastOrDefault() is not TextContainer txtObject)
                         {
-                            txtObject = new TextObject();
+                            txtObject = new TextContainer();
                             result.Items.Add(txtObject);
                         }
 
@@ -154,8 +154,8 @@ namespace SimpleSharpTemplateEngine
                     // This will return the contents of the if statement and all chaining if, else if and elses
                     var contents = TemplateEngine.BuildObjectModel(State.If, text, ref i);
 
-                    var obj = new IfChainObject();
-                    var ifObject = new IfObject(args);
+                    var obj = new IfThenElseBlock();
+                    var ifObject = new IfStatement(args);
                     obj.Items.Add(ifObject);
 
                     // Keep adding it until we hit an if chaining object.
@@ -184,8 +184,8 @@ namespace SimpleSharpTemplateEngine
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.IfNot, text, ref i);
 
-                    var obj = new IfChainObject();
-                    var ifObject = new IfNotObject(args);
+                    var obj = new IfThenElseBlock();
+                    var ifObject = new IfNotStatement(args);
                     obj.Items.Add(ifObject);
 
                     // Keep adding it until we hit an if chaining object.
@@ -217,7 +217,7 @@ namespace SimpleSharpTemplateEngine
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.ElseIf, text, ref i);
-                    var obj = new ElseIfObject(args, contents);
+                    var obj = new ElseIfStatement(args, contents);
 
                     result.Items.Add(obj);
                 }
@@ -228,7 +228,7 @@ namespace SimpleSharpTemplateEngine
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.Else, text, ref i);
-                    var obj = new ElseObject(contents);
+                    var obj = new ElseStatement(contents);
 
                     result.Items.Add(obj);
                 }
@@ -251,7 +251,7 @@ namespace SimpleSharpTemplateEngine
 
                     var contents = TemplateEngine.BuildObjectModel(State.Switch, text, ref i);
 
-                    var obj = new SwitchObject(args, contents);
+                    var obj = new SwitchStatement(args, contents);
 
                     result.Items.Add(obj);
                 }
@@ -272,7 +272,7 @@ namespace SimpleSharpTemplateEngine
                     i++;
                     TemplateEngine.SkipNewLine(text, ref i);
                     var contents = TemplateEngine.BuildObjectModel(State.SwitchCase, text, ref i);
-                    var obj = new SwitchCaseObject(args, contents);
+                    var obj = new SwitchCaseStatement(args, contents);
 
                     result.Items.Add(obj);
                 }
@@ -292,7 +292,7 @@ namespace SimpleSharpTemplateEngine
 
                     i++;
                     var contents = TemplateEngine.BuildObjectModel(State.Loop, text, ref i);
-                    var obj = new LoopObject(args, contents);
+                    var obj = new LoopStatement(args, contents);
 
                     result.Items.Add(obj);
                 }
@@ -309,7 +309,7 @@ namespace SimpleSharpTemplateEngine
                 {
                     // Found a Property.
                     var propertyName = CleanPropertyName(command); // Use the original command to save the correct case.
-                    var property = new PropertyObject(propertyName);
+                    var property = new PropertyContainer(propertyName);
                     result.Items.Add(property);
                 }
 

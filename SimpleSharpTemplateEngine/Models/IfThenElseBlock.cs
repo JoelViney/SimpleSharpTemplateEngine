@@ -14,12 +14,14 @@ namespace SimpleSharpTemplateEngine.Models
         // This is used to identify Else and ElseIf
     }
 
-
-    internal class IfChainObject : ITemplateObject
+    /// <summary>
+    /// Used to store a single logical if statement that can also contain else if and else statements.
+    /// </summary>
+    internal class IfThenElseBlock : ITemplateObject
     {
         public List<IIfStatementObject> Items { get; set; }
 
-        public IfChainObject()
+        public IfThenElseBlock()
         {
             this.Items = new List<IIfStatementObject>();
         }

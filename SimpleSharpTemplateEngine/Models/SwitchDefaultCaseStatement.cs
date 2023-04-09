@@ -2,18 +2,18 @@
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class ElseObject : IIfStatementObject, ITemplateObject, IIfStatementChainingObject
+    internal class SwitchDefaultCaseStatement : ISwitchCaseObject
     {
         public ContainerObject Contents { get; }
 
-        public ElseObject(ContainerObject contents)
+        public SwitchDefaultCaseStatement(ContainerObject contents)
         {
             this.Contents = contents;
         }
 
-        public bool MatchesExpression(object model)
+        public bool MatchExpression(object? value)
         {
-            return true; // If the else gets called, we always want to use it.
+            return true;
         }
 
         public StringBuilder Process(object model)

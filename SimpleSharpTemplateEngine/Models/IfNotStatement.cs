@@ -3,12 +3,12 @@ using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
-    internal class IfNotObject : IIfStatementObject
+    internal class IfNotStatement : IIfStatementObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public IfNotObject(string propertyName)
+        public IfNotStatement(string propertyName)
         {
             this.PropertyName = propertyName;
             this.Contents = new ContainerObject();

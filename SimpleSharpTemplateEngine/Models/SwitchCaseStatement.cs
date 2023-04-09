@@ -8,12 +8,12 @@ namespace SimpleSharpTemplateEngine.Models
         StringBuilder Process(object model);
     }
 
-    internal class SwitchCaseObject : ISwitchCaseObject, ITemplateObject
+    internal class SwitchCaseStatement : ISwitchCaseObject, ITemplateObject
     {
         public string PropertyName { get; }
         public ContainerObject Contents { get; }
 
-        public SwitchCaseObject(string propertyName, ContainerObject contents)
+        public SwitchCaseStatement(string propertyName, ContainerObject contents)
         {
             this.PropertyName = propertyName;
             this.Contents = contents;
