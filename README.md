@@ -27,6 +27,12 @@ var result = TemplateEngine.Execute(text, model);
 {{ MyProperty }}
 ```
 
+
+###### Chaining Property Assignment:
+```
+{{ MyChild.MyChildProperty }}
+```
+
 ###### If Statements
 ```
 {{ if: MyProperty1 }}
@@ -84,3 +90,15 @@ var result = TemplateEngine.Execute(text, model);
 {{if:MyProperty}}
 {{endif}}
 ```
+
+## TODO
+
+1. Add a way to reference the root object or the parent object:
+    {{ Root.MyProperty }}
+    {{ Parent.MyProperty }}
+
+1. Add Format?
+    {{ MyProperty: YYYY-MM-DD }}
+
+1. Add Conditionals
+    {{ if: x == 1 }}
