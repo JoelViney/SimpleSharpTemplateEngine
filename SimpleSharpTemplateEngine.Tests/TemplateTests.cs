@@ -5,6 +5,7 @@ namespace SimpleSharpTemplateEngine
     public class TemplateModel
     {
         public string MyProperty { get; set; }
+        public int MyNumber { get; set; }
     }
 
     [TestClass]
@@ -15,27 +16,41 @@ namespace SimpleSharpTemplateEngine
         [DataRow("Hello {{ MyProperty }}.", "Hello World.")]
         [DataRow("Hello {{ my-property }}.", "Hello World.")]
         [DataRow("Hello {{myproperty}}.", "Hello World.")]
-        public void ReplaceText(string text, string expected)
+        public void ReplaceText(string template, string expected)
         {
             // Arrange
             var model = new TemplateModel() { MyProperty = "World" };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
+        public void ReplaceNumberText()
+        {
+            // Arrange
+            var template = "Hello {{ MyNumber }}.";
+            var model = new TemplateModel() { MyNumber = 123 };
+
+            // Act
+            var result = TemplateEngine.Execute(template, model);
+
+            // Assert
+            Assert.AreEqual("Hello 123.", result);
+        }
+
+        [TestMethod]
         public void EmptyTemplate()
         {
             // Arrange
-            var text = "";
+            var template = "";
             var model = new TemplateModel();
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("", result);
@@ -45,11 +60,11 @@ namespace SimpleSharpTemplateEngine
         public void JustText()
         {
             // Arrange
-            var text = "Hello World.";
+            var template = "Hello World.";
             var model = new TemplateModel();
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("Hello World.", result);
@@ -59,11 +74,11 @@ namespace SimpleSharpTemplateEngine
         public void NullProperty()
         {
             // Arrange
-            var text = "Hello {{ MyProperty }}.";
+            var template = "Hello {{ MyProperty }}.";
             var model = new TemplateModel() { MyProperty = null };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("Hello .", result);

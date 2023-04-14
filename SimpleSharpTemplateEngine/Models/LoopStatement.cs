@@ -1,7 +1,5 @@
-﻿using System;
+﻿using SimpleSharpTemplateEngine.Helpers;
 using System.Collections;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -19,27 +17,19 @@ namespace SimpleSharpTemplateEngine.Models
 
         public StringBuilder Process(object model)
         {
-            Type modelType = model.GetType();
-            PropertyInfo[] properties = modelType.GetProperties();
-            var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
+            var property = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
-            if (property == null)
-                throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
-
-            if (!property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)))
-                throw new TemplateEngineException($"The loop variable ##{this.PropertyName}## isn't Enumerable.");
-
-            var builder = new StringBuilder();
-
-            if (property.GetValue(model, null) is IEnumerable enumerable)
+            if (property is IEnumerable enumerable)
             {
+                var builder = new StringBuilder();
                 foreach (var child in enumerable)
                 {
                     builder.Append(this.Contents.Process(child));
                 }
+                return builder;
             }
 
-            return builder;
+            throw new TemplateEngineException($"The loop variable '{this.PropertyName}' isn't Enumerable.");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleSharpTemplateEngine.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -28,18 +29,11 @@ namespace SimpleSharpTemplateEngine.Models
 
         public StringBuilder Process(object model)
         {
-            Type modelType = model.GetType();
-            PropertyInfo[] properties = modelType.GetProperties();
-            var property = properties.FirstOrDefault(x => x.Name.ToLower() == this.PropertyName.ToLower());
-
-            if (property == null)          
-                throw new TemplateEngineException($"Unable to locate the property ##{this.PropertyName}##");
-
-            var value = modelType.GetProperty(property.Name).GetValue(model);
+            var property = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
             foreach(var switchCase in this.Cases)
             { 
-                if (switchCase.MatchExpression(value))
+                if (switchCase.MatchExpression(property))
                 {
                     return switchCase.Process(model);
                 }

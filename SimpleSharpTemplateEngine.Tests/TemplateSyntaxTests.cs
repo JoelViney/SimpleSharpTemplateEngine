@@ -10,11 +10,11 @@ namespace SimpleSharpTemplateEngine
         public void CommandBlockWithoutClosingStatement()
         {
             // Arrange
-            var text = "Hello {{ MyProperty.";
+            var template = "Hello {{ MyProperty.";
             var model = new TemplateModel();
 
             // Act
-            TemplateEngine.Execute(text, model);
+            TemplateEngine.Execute(template, model);
 
             // Assert - Expecting an exception
         }
@@ -24,11 +24,11 @@ namespace SimpleSharpTemplateEngine
         public void SingleDelimiter()
         {
             // Arrange
-            var text = "Hello { World.";
+            var template = "Hello { World.";
             var model = new TemplateModel();
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("Hello { World.", result);

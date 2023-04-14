@@ -17,13 +17,13 @@ namespace SimpleSharpTemplateEngine
         [DataRow("{{ if: my-property1 }}Hello World.{{ end if }}", "Hello World.")]
         [DataRow("{{ IF: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
         [DataRow(">>>{{ if:MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
-        public void IfTrue(string text, string expected)
+        public void IfTrue(string template, string expected)
         {
             // Arrange
             var model = new IfModel() { MyProperty1 = true };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual(expected, result);
@@ -33,11 +33,11 @@ namespace SimpleSharpTemplateEngine
         public void IfFalse()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}Hello World.{{ end if }}";
+            var template = "{{ if: MyProperty1 }}Hello World.{{ end if }}";
             var model = new IfModel() { MyProperty1 = false };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("", result);
@@ -47,11 +47,11 @@ namespace SimpleSharpTemplateEngine
         public void NestedIf()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}{{ if: MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
+            var template = "{{ if: MyProperty1 }}{{ if: MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("Hello World.", result);
@@ -62,11 +62,11 @@ namespace SimpleSharpTemplateEngine
         public void NestedIfInSitu()
         {
             // Arrange
-            var text = "This {{ if: MyProperty1 }}is {{ if: MyProperty2 }}Hello World {{ end if }}right {{ end if }}here.";
+            var template = "This {{ if: MyProperty1 }}is {{ if: MyProperty2 }}Hello World {{ end if }}right {{ end if }}here.";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("This is Hello World right here.", result);
@@ -77,11 +77,11 @@ namespace SimpleSharpTemplateEngine
         public void NestedIfInnerFalse()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}{{ if: MyProperty2}}Hello World.{{ end if }}{{ endif }}";
+            var template = "{{ if: MyProperty1 }}{{ if: MyProperty2}}Hello World.{{ end if }}{{ endif }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = false };
 
             // Act
-            var result = TemplateEngine.Execute(text, model);
+            var result = TemplateEngine.Execute(template, model);
 
             // Assert
             Assert.AreEqual("", result);
