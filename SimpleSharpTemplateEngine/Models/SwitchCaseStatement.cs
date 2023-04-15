@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
 {
     internal interface ISwitchCaseObject
     {
-        bool MatchExpression(object value);
+        bool MatchExpression(object value, string format);
         StringBuilder Process(object model);
     }
 
@@ -19,14 +20,21 @@ namespace SimpleSharpTemplateEngine.Models
             this.Contents = contents;
         }
 
-        public bool MatchExpression(object value)
+        public bool MatchExpression(object value, string format)
         {
             if (value == null)
             {
                 return this.PropertyName == "null"; // Match on null
             }
 
-            return this.PropertyName == value.ToString();
+            if (format == null)
+            {
+                return this.PropertyName == value.ToString();
+            }
+            else
+            {
+                return String.Format(format, this.PropertyName) == String.Format(format, value);
+            }
         }
 
         public StringBuilder Process(object model)

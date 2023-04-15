@@ -35,27 +35,27 @@ var result = TemplateEngine.Execute(text, model);
 
 ###### If Statements
 ```
-{{ if: MyProperty1 }}
-{{ else if: MyProperty2 }}
+{{ if MyProperty1 }}
+{{ else if MyProperty2 }}
 {{ else }}
 {{ end if }}
 ```
 
 ###### If Not Statements
 ```
-{{ if not: MyProperty }}
+{{ if not MyProperty }}
 {{ end if }}
 ```
 
 ###### Loops
 ```
-{{ loop: MyList }}
+{{ loop MyList }}
 {{ end loop }}
 ```
 
 ###### Switch
 ```
-{{ switch: MyProperty }}
+{{ switch MyProperty }}
 {{ case: 1 }}
 {{ end case }}
 {{{ end switch }}
@@ -64,31 +64,30 @@ var result = TemplateEngine.Execute(text, model);
 
 ## Other Features
 
+##### Formatting
+
+```
+    {{ MyDateTime: YYYY-MM-DD }}
+```
 
 ###### Nesting
 ```
-{{ if: MyPoperty }}
-{{ loop: MyList }}
+{{ if MyProperty }}
+{{ loop MyList }}
 {{ end loop }}
 {{ end if }}
 ```
 
 ###### Kebab Case
 ```
-{{ if: my-property }}
+{{ if my-property }}
 {{ end if }}
 ```
 
 ###### Case Insensitive
 ```
-{{ IF: myproperty }}
+{{ IF myproperty }}
 {{ END IF }}
-```
-
-###### Not strict on spacing
-```
-{{if:MyProperty}}
-{{endif}}
 ```
 
 ## TODO
@@ -97,8 +96,5 @@ var result = TemplateEngine.Execute(text, model);
     {{ Root.MyProperty }}
     {{ Parent.MyProperty }}
 
-1. Add Format?
-    {{ MyProperty: YYYY-MM-DD }}
-
-1. Add Conditionals
+1. Add Conditionals?
     {{ if: x == 1 }}

@@ -29,11 +29,11 @@ namespace SimpleSharpTemplateEngine.Models
 
         public StringBuilder Process(object model)
         {
-            var property = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
+            var (property, format) = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
-            foreach(var switchCase in this.Cases)
+            foreach (var switchCase in this.Cases)
             { 
-                if (switchCase.MatchExpression(property))
+                if (switchCase.MatchExpression(property, format))
                 {
                     return switchCase.Process(model);
                 }

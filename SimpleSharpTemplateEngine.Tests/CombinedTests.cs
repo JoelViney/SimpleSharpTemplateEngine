@@ -21,7 +21,7 @@ namespace SimpleSharpTemplateEngine
         public void IfThenLoop()
         {
             // Arrange
-            var text = ".{{ if :MyProperty1 }}.{{ loop: mylist }}|{{ myname }}|{{ end loop }}.{{ end if }}.";
+            var text = ".{{ if MyProperty1 }}.{{ loop mylist }}|{{ myname }}|{{ end loop }}.{{ end if }}.";
             var model = new CombinedModel
             {
                 MyProperty1 = true,

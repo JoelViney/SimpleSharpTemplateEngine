@@ -16,7 +16,7 @@ namespace SimpleSharpTemplateEngine.Models
 
         public bool MatchesExpression(object model)
         {
-            var property = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
+            var (property, _) = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
             if (property is bool value)
             {

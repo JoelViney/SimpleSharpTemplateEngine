@@ -1,4 +1,5 @@
 ﻿using SimpleSharpTemplateEngine.Helpers;
+using System;
 using System.Text;
 
 namespace SimpleSharpTemplateEngine.Models
@@ -14,22 +15,25 @@ namespace SimpleSharpTemplateEngine.Models
 
         public StringBuilder Process(object model)
         {
-            var obj = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
+            var (property, format) = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
-            if (obj == null)
+            if (property == null)
             {
                 return new StringBuilder();
             }
-            if (obj is string value)
+
+            if (format != null)
             {
-                return new StringBuilder(value);
-            }
-            else if (obj is int objValue)
-            {
-                return new StringBuilder(objValue.ToString());
+                IFormattable formattable = property as IFormattable;
+
+                if (formattable != null)
+                {
+                    var str = formattable.ToString(format, null);
+                    return new StringBuilder(str);
+                }
             }
 
-            throw new TemplateEngineException($"Reached the default case while processing the Property {this.PropertyName}");
+            return new StringBuilder(property.ToString());
         }
     }
 }

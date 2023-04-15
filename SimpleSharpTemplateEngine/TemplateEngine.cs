@@ -1,4 +1,5 @@
-﻿using SimpleSharpTemplateEngine.Models;
+﻿using SimpleSharpTemplateEngine.Helpers;
+using SimpleSharpTemplateEngine.Models;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -120,7 +121,6 @@ namespace SimpleSharpTemplateEngine
                     continue; // Continue until we find a command or we are done with the template.
                 }
 
-                // Found a Command {{
                 i++; // Found the Start... skip processing the next squiggly bracket
 
                 if (!parseCommand)
@@ -129,20 +129,58 @@ namespace SimpleSharpTemplateEngine
                     continue;
                 }
 
-                command = command.Replace(" ", "").Trim();
-                var commandLowerCase = command.ToLower();
-                
-                // Pull out the args.
-                string args = null;
-                if (command.Contains(":"))
-                {
-                    var pos = command.IndexOf(':');
-                    args = command.Substring(pos + 1);
-                    args = CleanPropertyName(args);
-                }
+                // Found a Command {{
+                // if (expression)
+                // if not (expression)
+                // else if (expression)
+                // else
+                // end if
+                // switch (expression)
+                // case: (expression)
+                // end case
+                // end switch
+                // loop (expression)
+                // endloop
+                // property
+                // property: format
 
-                if (commandLowerCase.StartsWith("if:"))
+                command = command.Trim();
+                var commandLowerCase = command.ToLower();
+
+
+
+                if (commandLowerCase.StartsWith("if not "))
                 {
+                    var args = BuildExpression("if not ", command);
+
+                    if (args == null)
+                        throw new TemplateEngineException($"No arguments provided to the 'ifnot' at character {i}");
+
+                    var contents = BuildObjectModel(State.IfNot, text, ref i);
+
+                    var obj = new IfThenElseBlock();
+                    var ifObject = new IfNotStatement(args);
+                    obj.Items.Add(ifObject);
+
+                    // Keep adding it until we hit an if chaining object.
+                    foreach (var item in contents.Items)
+                    {
+                        if (item is IIfStatementChainingObject && item is IIfStatementObject childObject)
+                        {
+                            obj.Items.Add(childObject);
+                        }
+                        else
+                        {
+                            ifObject.Contents.Items.Add(item);
+                        }
+                    }
+
+                    result.Items.Add(obj);
+                }
+                else if (commandLowerCase.StartsWith("if "))
+                {
+                    var args = BuildExpression("if ", command);
+
                     if (args == null) 
                         throw new TemplateEngineException($"No arguments provided to the 'if' at character {i}");
 
@@ -168,37 +206,13 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if(commandLowerCase.StartsWith("ifnot:"))
-                {
-                    if (args == null) 
-                        throw new TemplateEngineException($"No arguments provided to the 'ifnot' at character {i}");
-                    
-                    var contents = BuildObjectModel(State.IfNot, text, ref i);
-
-                    var obj = new IfThenElseBlock();
-                    var ifObject = new IfNotStatement(args);
-                    obj.Items.Add(ifObject);
-
-                    // Keep adding it until we hit an if chaining object.
-                    foreach (var item in contents.Items)
-                    {
-                        if (item is IIfStatementChainingObject && item is IIfStatementObject childObject)
-                        {
-                            obj.Items.Add(childObject);
-                        }
-                        else
-                        {
-                            ifObject.Contents.Items.Add(item);
-                        }
-                    }
-
-                    result.Items.Add(obj);
-                }
-                else if (commandLowerCase.StartsWith("elseif:"))
+                else if (commandLowerCase.StartsWith("else if "))
                 {
                     if (state != State.If && state != State.IfNot && state != State.ElseIf) 
                         throw new TemplateEngineException($"Unexpected 'else' at character {i}");
-                    
+
+                    var args = BuildExpression("else if ", command);
+
                     if (args == null) 
                         throw new TemplateEngineException($"No arguments provided to the 'else' at character {i}");
 
@@ -208,7 +222,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (commandLowerCase.StartsWith("else"))
+                else if (commandLowerCase == "else")
                 {
                     if (state != State.If && state != State.IfNot && state != State.ElseIf) 
                         throw new TemplateEngineException($"Unexpected 'else' at character {i}");
@@ -219,15 +233,17 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (commandLowerCase == "endif")
+                else if (commandLowerCase == "end if")
                 {
                     if (state != State.If && state != State.IfNot && state != State.ElseIf && state != State.Else) 
                         throw new TemplateEngineException($"Unexpected 'endif' at character {i}");
 
                     return result;
                 }
-                else if (commandLowerCase.StartsWith("switch:"))
+                else if (commandLowerCase.StartsWith("switch "))
                 {
+                    var args = BuildExpression("switch ", command);
+
                     if (args == null) 
                         throw new TemplateEngineException($"No arguments provided to the 'switch' at character {i}");
                     
@@ -237,7 +253,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (commandLowerCase == "endswitch")
+                else if (commandLowerCase == "end switch")
                 {
                     if (state != State.Switch) 
                         throw new TemplateEngineException($"Unexpected 'endswitch' at character {i}");
@@ -246,6 +262,8 @@ namespace SimpleSharpTemplateEngine
                 }
                 else if (commandLowerCase.StartsWith("case:"))
                 {
+                    var args = BuildExpression("case:", command);
+
                     if (args == null) 
                         throw new TemplateEngineException($"No arguments provided to the 'case' at character {i}");
 
@@ -255,15 +273,16 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (commandLowerCase == "endcase")
+                else if (commandLowerCase == "end case")
                 {
                     if (state != State.SwitchCase) 
                         throw new TemplateEngineException($"Unexpected 'endcase' at character {i}");
 
                     return result;
                 }
-                else if (commandLowerCase.StartsWith("loop:"))
+                else if (commandLowerCase.StartsWith("loop "))
                 {
+                    var args = BuildExpression("loop ", command);
                     if (args == null) 
                         throw new TemplateEngineException($"No arguments provided to the 'loop' at character {i}");
                     
@@ -273,7 +292,7 @@ namespace SimpleSharpTemplateEngine
 
                     result.Items.Add(obj);
                 }
-                else if (commandLowerCase == "endloop")
+                else if (commandLowerCase == "end loop")
                 {
                     if (state != State.Loop) 
                         throw new TemplateEngineException($"Unexpected 'endloop' at character {i}"); // This shouldn't happen, we have a malformed template.
@@ -283,7 +302,7 @@ namespace SimpleSharpTemplateEngine
                 else
                 {
                     // Found a Property.
-                    var propertyName = CleanPropertyName(command); // Use the original command to save the correct case.
+                    var propertyName = PropertyHelper.CleanPropertyName(command); // Use the original command to save the correct case.
                     var property = new PropertyContainer(propertyName);
                     result.Items.Add(property);
                 }
@@ -303,12 +322,17 @@ namespace SimpleSharpTemplateEngine
             return result;
         }
 
-
-        private static string CleanPropertyName(string text)
+        private static string BuildExpression(string statement, string text)
         {
-            return text.Replace("-", "");
-        }
+            var expression = text.Substring(statement.Length).Replace("-", "").Trim();
 
+            if (expression.StartsWith("(") && expression.EndsWith(")")) 
+            {
+                expression = expression.Substring(1, expression.Length - 2);
+            }
+
+            return expression;
+        }
 
         private static void DebugObjectModel(ContainerObject model, int indent = 0)
         {

@@ -25,7 +25,7 @@ namespace SimpleSharpTemplateEngine
         public void Loop()
         {
             // Arrange
-            var template = ".{{ loop: MyList }}|{{myname}}|{{ end loop }}.";
+            var template = ".{{ loop MyList }}|{{ myname }}|{{ end loop }}.";
             var model = new LoopModel
             {
                 MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { MyName = "One" }, new LoopChildModel() { MyName = "Two" } })
@@ -41,7 +41,7 @@ namespace SimpleSharpTemplateEngine
         public void ParentLoop()
         {
             // Arrange
-            var template = ".{{ loop: MyChildLoop.MyList }}|{{myname}}|{{ end loop }}.";
+            var template = ".{{ loop MyChildLoop.MyList }}|{{ myname }}|{{ end loop }}.";
             var model = new ParentLoopModel
             {
                 MyChildLoop = new LoopModel
@@ -62,7 +62,7 @@ namespace SimpleSharpTemplateEngine
         public void EmptyLoop()
         {
             // Arrange
-            var template = ".{{ loop: MyList }}|{{myname}}|{{ end loop }}.";
+            var template = ".{{ loop MyList }}|{{ myname }}|{{ end loop }}.";
             var model = new LoopModel
             {
                 MyList = new List<LoopChildModel>()
@@ -79,7 +79,7 @@ namespace SimpleSharpTemplateEngine
         public void LoopThenLoop()
         {
             // Arrange
-            var template = ".{{ loop: MyList }}|{{ myname }}|{{ end loop }}.{{ loop: MyList }}|{{ myname }}|{{ end loop }}.";
+            var template = ".{{ loop MyList }}|{{ myname }}|{{ end loop }}.{{ loop MyList }}|{{ myname }}|{{ end loop }}.";
             var model = new LoopModel
             {
                 MyList = new List<LoopChildModel>(new[] { new LoopChildModel() { MyName = "One" }, new LoopChildModel() { MyName = "Two" } })

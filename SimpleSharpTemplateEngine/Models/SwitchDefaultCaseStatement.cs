@@ -11,7 +11,7 @@ namespace SimpleSharpTemplateEngine.Models
             this.Contents = contents;
         }
 
-        public bool MatchExpression(object value)
+        public bool MatchExpression(object value, string format)
         {
             return true;
         }

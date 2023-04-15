@@ -17,7 +17,7 @@ namespace SimpleSharpTemplateEngine.Models
 
         public StringBuilder Process(object model)
         {
-            var property = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
+            var (property, _) = PropertyHelper.GetReferencedProperty(model, this.PropertyName);
 
             if (property is IEnumerable enumerable)
             {

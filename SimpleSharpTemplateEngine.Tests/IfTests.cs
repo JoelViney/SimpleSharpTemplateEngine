@@ -12,11 +12,10 @@ namespace SimpleSharpTemplateEngine
     public class IfTests
     {
         [DataTestMethod]
-        [DataRow("{{if:MyProperty1}}Hello World.{{endif}}", "Hello World.")]
-        [DataRow("{{ if:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
-        [DataRow("{{ if: my-property1 }}Hello World.{{ end if }}", "Hello World.")]
-        [DataRow("{{ IF: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
-        [DataRow(">>>{{ if:MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
+        [DataRow("{{if MyProperty1}}Hello World.{{end if}}", "Hello World.")]
+        [DataRow("{{ if MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ if my-property1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow(">>>{{ if MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
         public void IfTrue(string template, string expected)
         {
             // Arrange
@@ -33,7 +32,7 @@ namespace SimpleSharpTemplateEngine
         public void IfFalse()
         {
             // Arrange
-            var template = "{{ if: MyProperty1 }}Hello World.{{ end if }}";
+            var template = "{{ if MyProperty1 }}Hello World.{{ end if }}";
             var model = new IfModel() { MyProperty1 = false };
 
             // Act
@@ -47,7 +46,7 @@ namespace SimpleSharpTemplateEngine
         public void NestedIf()
         {
             // Arrange
-            var template = "{{ if: MyProperty1 }}{{ if: MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
+            var template = "{{ if MyProperty1 }}{{ if MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
@@ -62,7 +61,7 @@ namespace SimpleSharpTemplateEngine
         public void NestedIfInSitu()
         {
             // Arrange
-            var template = "This {{ if: MyProperty1 }}is {{ if: MyProperty2 }}Hello World {{ end if }}right {{ end if }}here.";
+            var template = "This {{ if MyProperty1 }}is {{ if MyProperty2 }}Hello World {{ end if }}right {{ end if }}here.";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = true };
 
             // Act
@@ -77,7 +76,7 @@ namespace SimpleSharpTemplateEngine
         public void NestedIfInnerFalse()
         {
             // Arrange
-            var template = "{{ if: MyProperty1 }}{{ if: MyProperty2}}Hello World.{{ end if }}{{ endif }}";
+            var template = "{{ if MyProperty1 }}{{ if MyProperty2 }}Hello World.{{ end if }}{{ end if }}";
             var model = new IfModel() { MyProperty1 = true, MyProperty2 = false };
 
             // Act

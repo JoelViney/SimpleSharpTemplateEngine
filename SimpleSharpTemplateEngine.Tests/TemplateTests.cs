@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace SimpleSharpTemplateEngine
 {
@@ -6,6 +7,7 @@ namespace SimpleSharpTemplateEngine
     {
         public string MyProperty { get; set; }
         public int MyNumber { get; set; }
+        public DateTime MyDateTime { get; set; }
     }
 
     [TestClass]
@@ -28,18 +30,35 @@ namespace SimpleSharpTemplateEngine
             Assert.AreEqual(expected, result);
         }
 
-        [TestMethod]
-        public void ReplaceNumberText()
+        [DataTestMethod]
+        [DataRow("Hello {{ MyNumber }}.", "Hello 1234.")]
+        [DataRow("Hello {{ MyNumber: C }}.", "Hello $1,234.00")]
+        public void ReplaceNumber(string template, string expected)
         {
             // Arrange
-            var template = "Hello {{ MyNumber }}.";
-            var model = new TemplateModel() { MyNumber = 123 };
+            var model = new TemplateModel() { MyNumber = 1234 };
 
             // Act
             var result = TemplateEngine.Execute(template, model);
 
             // Assert
-            Assert.AreEqual("Hello 123.", result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [DataTestMethod]
+        [DataRow("Hello {{ MyDateTime: yyyy-MM-dd }}.", "Hello 2020-03-29.")]
+        [DataRow("Hello {{ MyDateTime: yyyy-MM-dd HH:mm:ss }}.", "Hello 2020-03-29 14:34:55.")]
+        [DataRow("Hello {{ MyDateTime: dddd }}.", "Hello Sunday.")]
+        public void ReplaceDateTime(string template, string expected)
+        {
+            // Arrange
+            var model = new TemplateModel() { MyDateTime = new DateTime(2020, 03, 29, 14, 34, 55)};
+
+            // Act
+            var result = TemplateEngine.Execute(template, model);
+
+            // Assert
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]

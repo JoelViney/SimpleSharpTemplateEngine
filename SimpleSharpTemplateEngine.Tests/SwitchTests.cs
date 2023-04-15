@@ -14,7 +14,7 @@ namespace SimpleSharpTemplateEngine
         public void SimpleSwitch()
         {
             // Arrange
-            var template = @"{{ switch: MyName }}{{ case:A }}Aye{{ end case }}{{ end switch }}";
+            var template = @"{{ switch MyName }}{{ case: A }}Aye{{ end case }}{{ end switch }}";
             var model = new SwitchModel() { MyName = "A" };
 
             // Act
@@ -29,7 +29,7 @@ namespace SimpleSharpTemplateEngine
         public void Switch()
         {
             // Arrange
-            var template = @"{{ switch: MyName }}{{ case: A }}Aye{{ end case }}{{ case: B }}Bee{{ end case }}{{ end switch }}";
+            var template = @"{{ switch MyName }}{{ case: A }}Aye{{ end case }}{{ case: B }}Bee{{ end case }}{{ end switch }}";
             var model = new SwitchModel() { MyName = "A" };
 
             // Act
@@ -44,7 +44,7 @@ namespace SimpleSharpTemplateEngine
         public void SwitchSecondOption()
         {
             // Arrange
-            var template = @"{{ switch: MyName }}{{ case: A }}Aye{{ end case }}{{ case: B }}Bee{{ end case }}{{ end switch }}";
+            var template = @"{{ switch MyName }}{{ case: A }}Aye{{ end case }}{{ case: B }}Bee{{ end case }}{{ end switch }}";
             var model = new SwitchModel() { MyName = "B" };
 
             // Act

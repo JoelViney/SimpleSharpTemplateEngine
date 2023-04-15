@@ -15,7 +15,7 @@ namespace SimpleSharpTemplateEngine
         public void IfChaining()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}Text inside the if{{ else }}Text inside the else{{ end if }}";
+            var text = "{{ if MyProperty1 }}Text inside the if{{ else }}Text inside the else{{ end if }}";
             var model = new IfChaningModel() { MyProperty1 = true };
 
             // Act
@@ -29,7 +29,7 @@ namespace SimpleSharpTemplateEngine
         public void ElseChaining()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}Text inside the If{{ else }}Text inside the else{{ end if }}";
+            var text = "{{ if MyProperty1 }}Text inside the If{{ else }}Text inside the else{{ end if }}";
             var model = new IfChaningModel() { MyProperty1 = false };
 
             // Act
@@ -43,7 +43,7 @@ namespace SimpleSharpTemplateEngine
         public void IfElseChaining()
         {
             // Arrange
-            var text = "{{ if: MyProperty1 }}Text inside the if{{ else if: MyProperty2 }}Text inside the second if{{ end if }}";
+            var text = "{{ if MyProperty1 }}Text inside the if{{ else if MyProperty2 }}Text inside the second if{{ end if }}";
             var model = new IfChaningModel() { MyProperty1 = false, MyProperty2 = true };
 
             // Act

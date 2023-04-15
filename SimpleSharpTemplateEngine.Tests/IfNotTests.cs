@@ -11,12 +11,9 @@ namespace SimpleSharpTemplateEngine
     public class IfNotTests
     {
         [DataTestMethod]
-        [DataRow("{{ifnot:MyProperty1}}Hello World.{{endif}}", "Hello World.")]
-        [DataRow("{{ ifnot:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
-        [DataRow("{{ if not:MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
-        [DataRow("{{ ifnot: my-property1 }}Hello World.{{ end if }}", "Hello World.")]
-        [DataRow("{{ IFNOT: MyProperty1 }}Hello World.{{ ENDIF }}", "Hello World.")]
-        [DataRow(">>>{{ ifnot:MyProperty1 }}Hello World.{{ end if }}<<<", ">>>Hello World.<<<")]
+        [DataRow("{{if not MyProperty1}}Hello World.{{end if}}", "Hello World.")]
+        [DataRow("{{ if not MyProperty1 }}Hello World.{{ end if }}", "Hello World.")]
+        [DataRow("{{ IF NOT MyProperty1 }}Hello World.{{ END IF }}", "Hello World.")]
         public void IfNotIsApplied(string text, string expected)
         {
             // Arrange
@@ -33,7 +30,7 @@ namespace SimpleSharpTemplateEngine
         public void IfNotIsntApplied()
         {
             // Arrange
-            var text = "{{ if not: MyProperty1 }}This text is inside the If{{ end if }}";
+            var text = "{{ if not MyProperty1 }}This text is inside the If{{ end if }}";
             var model = new NotIfModel() { MyProperty1 = true };
 
             // Act
