@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
+using System.Threading;
 
 namespace SimpleSharpTemplateEngine
 {
@@ -35,6 +37,8 @@ namespace SimpleSharpTemplateEngine
         [DataRow("Hello {{ MyNumber: C }}.", "Hello $1,234.00.")]
         public void ReplaceNumber(string template, string expected)
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
             // Arrange
             var model = new TemplateModel() { MyNumber = 1234 };
 
