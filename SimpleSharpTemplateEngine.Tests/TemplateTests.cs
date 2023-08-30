@@ -32,7 +32,7 @@ namespace SimpleSharpTemplateEngine
 
         [DataTestMethod]
         [DataRow("Hello {{ MyNumber }}.", "Hello 1234.")]
-        [DataRow("Hello {{ MyNumber: C }}.", "Hello $1,234.00")]
+        [DataRow("Hello {{ MyNumber: C }}.", "Hello $1,234.00.")]
         public void ReplaceNumber(string template, string expected)
         {
             // Arrange
