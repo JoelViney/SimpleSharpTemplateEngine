@@ -140,7 +140,7 @@ namespace SimpleSharpTemplateEngine
                 // end case
                 // end switch
                 // loop (expression)
-                // endloop
+                // end loop
                 // property
                 // property: format
 
@@ -154,7 +154,9 @@ namespace SimpleSharpTemplateEngine
                     var args = BuildExpression("if not ", command);
 
                     if (args == null)
+                    {
                         throw new TemplateEngineException($"No arguments provided to the 'ifnot' at character {i}");
+                    }
 
                     var contents = BuildObjectModel(State.IfNot, text, ref i);
 
@@ -295,7 +297,7 @@ namespace SimpleSharpTemplateEngine
                 else if (commandLowerCase == "end loop")
                 {
                     if (state != State.Loop) 
-                        throw new TemplateEngineException($"Unexpected 'endloop' at character {i}"); // This shouldn't happen, we have a malformed template.
+                        throw new TemplateEngineException($"Unexpected 'end loop' at character {i}"); // This shouldn't happen, we have a malformed template.
 
                     return result;
                 }
